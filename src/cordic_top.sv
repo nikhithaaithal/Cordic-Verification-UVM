@@ -10,7 +10,7 @@ module cordic_top;
   bit clk;
   bit rstn;
 
-  always #5 clk = ~clk;
+  always #10 clk = ~clk;
 
   initial begin
     rstn = 0;
