@@ -57,7 +57,7 @@ class quad1_seq extends uvm_sequence#(cordic_seq_item);
   `uvm_object_utils(quad1_seq)
   
   function new(string name="quad1_seq");
-    super.new(name);
+    super.new(name);l
   endfunction
   
   task body();
