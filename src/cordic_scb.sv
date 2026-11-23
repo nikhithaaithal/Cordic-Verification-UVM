@@ -38,12 +38,24 @@ class cordic_scb extends uvm_scoreboard;
   
   task sample();
     inp_mon_fifo.get(inp);
-     out_mon_fifo.get(out);
+    out_mon_fifo.get(out);
     if(!out.rstn)
       rst_seen=1;
   endtask
-  
+  /*
    function void reset();
+    if ((out.done != 0) || (out.error != 0) || (out.data_out != 0)) begin
+      `uvm_error(get_type_name(),
+        $sformatf("RESET MISMATCH: done=%0b error=%0b data_out=0x%02h (all expected 0)",
+                   out.done, out.error, out.data_out))
+      fail++;
+    end
+    else
+      `uvm_info(get_type_name(), "RESET OUTPUTS OK: busy/done/error/data_out all 0", UVM_MEDIUM)
+  endfunction
+  */
+   task reset();
+     sample(); 
     if ((out.busy != 0) || (out.done != 0) || (out.error != 0) || (out.data_out != 0)) begin
       `uvm_error(get_type_name(),
         $sformatf("RESET MISMATCH: busy=%0b done=%0b error=%0b data_out=0x%02h (all expected 0)",
@@ -52,26 +64,27 @@ class cordic_scb extends uvm_scoreboard;
     end
     else
       `uvm_info(get_type_name(), "RESET OUTPUTS OK: busy/done/error/data_out all 0", UVM_MEDIUM)
-  endfunction
+   endtask
+  
   
   task main_process();
      forever 
     begin
-      sample();
+      sample();if (rst_seen) return;
       
        if(inp.start && !out.busy) begin
         expected.ang_mul=inp.ang_mul;//c0
          
-          sample();
+          sample();if (rst_seen) return;
          expected.inp[7:0]=inp.data_in;//c1
-         
-          sample();
+          
+          sample();if (rst_seen) return;
          expected.inp[15:8]=inp.data_in;//c2
          
          predict(expected);
-         
+          
          do begin
-            sample();
+            sample();if (rst_seen) return;
          end
          while(out.done!==1);
          actual_bytes[0] = out.data_out;
@@ -79,14 +92,14 @@ class cordic_scb extends uvm_scoreboard;
          if(expected.ang_mul)begin
            for(int i=1;i<4;i++)
              begin
-                sample();
+                sample();if (rst_seen) return;
                actual_bytes[i]=out.data_out;
              end
          end
          else begin
            for(int i=1;i<2;i++)
              begin
-                sample();
+                sample();if (rst_seen) return;
                actual_bytes[i]=out.data_out;
              end
          end
@@ -98,14 +111,15 @@ class cordic_scb extends uvm_scoreboard;
       
 
  
- task run_phase(uvm_phase phase);
-  fork 
+task run_phase(uvm_phase phase);
+  forever begin
     main_process();
-    if(rst_seen) reset();
-  join_any
-  disable fork;
-  rst_seen=0;
- endtask
+    if (rst_seen) begin
+      reset();
+      rst_seen = 0;
+    end
+  end
+endtask
   
 task predict(cordic_seq_item t);
 

@@ -53,6 +53,7 @@ class cordic_drv extends uvm_driver#(cordic_seq_item);
     
     @(vif.drv_cb);//c2
     vif.drv_cb.data_in<=req.inp[15:8];
+    if(req.start_inject)vif.drv_cb.start<=1;
     `uvm_info(get_type_name(),
             $sformatf("[%0t] c2: data_in(high byte)=0x%02h",
                       $time, req.inp[15:8]),
@@ -62,6 +63,7 @@ class cordic_drv extends uvm_driver#(cordic_seq_item);
     @(vif.drv_cb);//c3
     if (req.data_inject)begin
      vif.drv_cb.data_in<= 8'hFF;
+     if(req.start_inject)vif.drv_cb.start<=0;
      `uvm_info(get_type_name(),"data_inject",UVM_MEDIUM)
      end
  

@@ -33,7 +33,9 @@ class err_ang_seq extends uvm_sequence#(cordic_seq_item);
   endfunction
   
   task body();
+    repeat(25) begin
     `uvm_do_with(req, { ang_mul==1; inp == 16'h0205;err ==1; })   
+    end
   endtask
 
 endclass
@@ -450,7 +452,7 @@ class data_inject_seq extends uvm_sequence#(cordic_seq_item);
   endfunction
   
   task body();
-    `uvm_do_with(req, { ang_mul==1; inp == 16'h4000; data_inject==1; })   
+    `uvm_do_with(req, { ang_mul==1; inp == 16'h4000;start_inject ==1; data_inject==1; })   
   endtask
 
 endclass

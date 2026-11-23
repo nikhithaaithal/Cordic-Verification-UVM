@@ -21,13 +21,17 @@ module cordic_top;
     repeat(2) @(posedge clk);
     rstn = 1;
     
-    
-    
-    repeat(37) @(posedge clk);
+    repeat(30) @(posedge clk);
     rstn = 0;
     @(posedge clk);
     rstn = 1;
     
+    repeat(38) @(posedge clk);
+    rstn = 0;
+    @(posedge clk);
+    rstn = 1;
+    
+        
   end
 
   cordic_intf vif (.clk(clk), .rstn(rstn));

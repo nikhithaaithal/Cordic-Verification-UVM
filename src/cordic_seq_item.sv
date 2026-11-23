@@ -12,9 +12,10 @@ class cordic_seq_item extends uvm_sequence_item;
   rand bit data_inject;
   rand bit mode_inject;
   rand bit [15:0] inp;
+  rand bit start_inject;
   
   constraint c1{
-    
+    soft start_inject==0;
     soft data_inject==0;
     soft mode_inject ==0;
     soft err==0;
