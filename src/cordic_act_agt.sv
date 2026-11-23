@@ -1,8 +1,7 @@
 class cordic_act_agt extends uvm_agent;
-
+  
   `uvm_component_utils(cordic_act_agt)
-
-  cordic_drv drv;
+cordic_drv drv;
   cordic_seqr seqr;
   cordic_inp_mon moni;
 
