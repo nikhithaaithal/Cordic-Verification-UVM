@@ -42,18 +42,7 @@ class cordic_scb extends uvm_scoreboard;
     if(!out.rstn)
       rst_seen=1;
   endtask
-  /*
-   function void reset();
-    if ((out.done != 0) || (out.error != 0) || (out.data_out != 0)) begin
-      `uvm_error(get_type_name(),
-        $sformatf("RESET MISMATCH: done=%0b error=%0b data_out=0x%02h (all expected 0)",
-                   out.done, out.error, out.data_out))
-      fail++;
-    end
-    else
-      `uvm_info(get_type_name(), "RESET OUTPUTS OK: busy/done/error/data_out all 0", UVM_MEDIUM)
-  endfunction
-  */
+
    task reset();
      sample(); 
     if ((out.busy != 0) || (out.done != 0) || (out.error != 0) || (out.data_out != 0)) begin
@@ -62,8 +51,10 @@ class cordic_scb extends uvm_scoreboard;
                   out.busy, out.done, out.error, out.data_out))
       fail++;
     end
-    else
+    else begin
       `uvm_info(get_type_name(), "RESET OUTPUTS OK: busy/done/error/data_out all 0", UVM_MEDIUM)
+      pass++;
+      end
    endtask
   
   
