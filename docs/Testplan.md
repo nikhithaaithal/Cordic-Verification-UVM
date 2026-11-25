@@ -1,3 +1,3 @@
 # CORDIC Test Plan
 
-Google Sheet: [CORDIC Test Plan](https://docs.google.com/spreadsheets/d/1VXY1Q4-FkzZAypk9F7CKjsKZw3SgHW1A37fwWDArdns/edit?gid=1755696013#gid=1755696013)
+Google Sheet: [CORDIC Test Plan](https://docs.google.com/spreadsheets/d/1VXY1Q4-FkzZAypk9F7CKjsKZw3SgHW1A37fwWDArdns/edit?usp=sharing)
