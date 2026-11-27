@@ -28,12 +28,42 @@ class cordic_drv extends uvm_driver#(cordic_seq_item);
     end
   endtask
   
-  task drive(cordic_seq_item  req);
+task drive(cordic_seq_item req);
+
+  do begin
+    @(vif.drv_cb);
+  end while(vif.rstn !== 1'b1);
+
+  fork : drive_or_reset
+
+    begin
+      drive_transaction(req);
+    end
+
+    begin
+      do begin
+        @(vif.drv_cb);
+      end while(vif.rstn !== 1'b0);
+
+      `uvm_info(get_type_name(),
+        $sformatf("[%0t] RESET ASSERTED: Aborting current transaction",$time),
+        UVM_MEDIUM)
+
+      vif.drv_cb.start <= 0;
+      vif.drv_cb.ang_mul <= 0;
+      vif.drv_cb.data_in <= 0;
+    end
+
+  join_any
+
+  disable drive_or_reset;
+
+endtask
+        
+        
+  
+  task drive_transaction(cordic_seq_item  req);
     int err_cycle=0;
-    
-    do begin
-      @(vif.drv_cb);
-    end while (vif.rstn !== 1'b1);
     
     @(vif.drv_cb);//c0
     vif.drv_cb.start<=req.start;
@@ -53,7 +83,6 @@ class cordic_drv extends uvm_driver#(cordic_seq_item);
     
     @(vif.drv_cb);//c2
     vif.drv_cb.data_in<=req.inp[15:8];
-    if(req.start_inject)vif.drv_cb.start<=1;
     `uvm_info(get_type_name(),
             $sformatf("[%0t] c2: data_in(high byte)=0x%02h",
                       $time, req.inp[15:8]),
@@ -63,7 +92,6 @@ class cordic_drv extends uvm_driver#(cordic_seq_item);
     @(vif.drv_cb);//c3
     if (req.data_inject)begin
      vif.drv_cb.data_in<= 8'hFF;
-     if(req.start_inject)vif.drv_cb.start<=0;
      `uvm_info(get_type_name(),"data_inject",UVM_MEDIUM)
      end
  
@@ -93,13 +121,4 @@ class cordic_drv extends uvm_driver#(cordic_seq_item);
     
   endtask
 endclass
-      
-      
-
-        
-      
     
-    
-    
-    
-      
